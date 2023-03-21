@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:wsaws="http://www.w3.org/2005/08/addressing"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:cpi="http://www.consolidated.com/cpi" name="CPI"
+	targetNamespace="http://www.consolidated.com/cpi">
+	<wsdl:documentation> CR6450 Customer Payment Interface EAI web services
+		to support real-time payment posting and service restoral. The
+		following web services are provided: - accountInfo - Retrieves billing
+		account information - payAndRestore - Posts a real-time payment, and
+		initiates a service restore if eligible - deposit - Posts a real-time
+		deposit - note - Creates a note in Siebel and in Kenan for customer
+		services and collections to see. Required to record failed payments. -
+		extendDueDate - Creates a due date extension (called a payment
+		arrangement in Kansys) </wsdl:documentation>
+	<wsdl:types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+			xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+			xmlns:wsaws="http://www.w3.org/2005/08/addressing"
+			xmlns:tns="http://www.consolidated.com/cpi"
+			xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+			xmlns:cpi="http://www.consolidated.com/cpi"
+			attributeFormDefault="unqualified" elementFormDefault="qualified"
+			targetNamespace="http://www.consolidated.com/cpi">
+			<xs:element name="AccountInfo">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="AccountInfoRequest"
+							type="tns:AccountInfoRequestType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AccountInfoResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="AccountInfoOutput"
+							type="tns:AccountInfoOutputType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PayAndRestore">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="PayAndRestoreRequest"
+							type="tns:PayAndRestoreRequestType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="PayAndRestoreResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="PayAndRestoreOutput"
+							type="tns:PayAndRestoreOutputType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Deposit">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DepositRequest"
+							type="tns:DepositRequestType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DepositResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DepositOutput"
+							type="tns:DepositOutputType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Note">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="NoteRequest"
+							type="tns:NoteRequestType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NoteResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="NoteOutput" type="tns:NoteOutputType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ExtendDueDate">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ExtendDueDateRequest"
+							type="tns:ExtendDueDateRequestType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ExtendDueDateResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ExtendDueDateOutput"
+							type="tns:ExtendDueDateOutputType" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AccountInactive">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AccountNotFound">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="DuplicateRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InvalidNoteType">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InvalidPaymentAmount">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InvalidTransSource">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="InvalidTransType">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="NotEligibleForExtension">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="SystemError">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TnNotFound">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:complexType name="HeaderType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="EnterpriseID">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="50" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="MessageTrackingID">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="50" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="AccountInfoRequestType">
+				<xs:sequence>
+					<xs:element name="Header" type="tns:HeaderType" />
+					<xs:element name="Request"
+						type="tns:AccountInfoRequestRecordType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="AccountInfoRequestRecordType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="SearchID">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="30" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="SearchType">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="BAN" />
+								<xs:enumeration value="TN" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="AccountInfoOutputType">
+				<xs:sequence>
+					<xs:element name="Header" type="tns:HeaderType" />
+					<xs:element name="ResponseRecord"
+						type="tns:AccountInfoResponseRecordType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="AccountInfoResponseRecordType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="TrackingID"
+						type="xs:long" />
+					<xs:element minOccurs="1" name="BAN">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="30" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="0" name="FirstName">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="28" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="0" name="LastName">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="56" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="AccountName">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="50" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="BillCity">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="35" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="BillState">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="28" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="BillCountry">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="15" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="CreditClass">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="5" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="CpniPin">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:pattern value="[0-9][0-9][0-9][0-9]" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="AccountCategory">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="15" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="AccountStatus">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="NEW" />
+								<xs:enumeration value="CURRENT" />
+								<xs:enumeration value="DISC_REQ" />
+								<xs:enumeration value="DISC_DONE" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="VIPCode"
+						type="xs:string" />
+					<xs:element minOccurs="1" name="InCollections"
+						type="xs:boolean" />
+					<xs:element minOccurs="1" name="IsSuspended"
+						type="xs:boolean" />
+					<xs:element minOccurs="1" name="HasKansysContract"
+						type="xs:boolean" />
+					<xs:element minOccurs="0"
+						name="EarliestAllowableDueDate" type="xs:date" />
+					<xs:element minOccurs="0" name="LatestAllowableDueDate"
+						type="xs:date" />
+					<xs:element minOccurs="1" name="ExtensionMaxBalance"
+						type="xs:long" />
+					<xs:element minOccurs="0" name="LastBillDate"
+						type="xs:date" />
+					<xs:element minOccurs="0" name="LastBillAmount"
+						type="xs:long" />
+					<xs:element minOccurs="1" name="CurrentDueBalance"
+						type="xs:long" />
+					<xs:element minOccurs="1" name="PastDueBalance"
+						type="xs:long" />
+					<xs:element minOccurs="0" name="PaymentDueDate"
+						type="xs:date" />
+					<xs:element minOccurs="1" name="MaxOverpaymentAmount"
+						type="xs:long" />
+					<xs:element minOccurs="0" name="LastPaymentAmount"
+						type="xs:long" />
+					<xs:element minOccurs="0" name="LastPaymentDate"
+						type="xs:dateTime" />
+					<xs:element minOccurs="1" name="CashOnly"
+						type="xs:boolean" />
+					<xs:element minOccurs="0" name="ExtendedDueDate"
+						type="xs:date" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="PayAndRestoreRequestType">
+				<xs:sequence>
+					<xs:element name="Header" type="tns:HeaderType" />
+					<xs:element name="Request"
+						type="tns:PayAndRestoreRequestRecordType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="PayAndRestoreRequestRecordType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="BAN">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="30" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="Amount">
+						<xs:simpleType>
+							<xs:restriction base="xs:long">
+								<xs:minInclusive value="1" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="0" name="FeeAmount"
+						nillable="true" type="xs:long" />
+					<xs:element minOccurs="1" name="Date" type="xs:dateTime" />
+					<xs:element minOccurs="0" name="Annotation">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="255" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="TransType" type="xs:int" />
+					<xs:element minOccurs="1" name="TransSource"
+						type="xs:int" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="PayAndRestoreOutputType">
+				<xs:sequence>
+					<xs:element name="Header" type="tns:HeaderType" />
+					<xs:element name="ResponseRecord"
+						type="tns:PayAndRestoreResponseRecordType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="PayAndRestoreResponseRecordType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="TrackingID"
+						type="xs:long" />
+					<xs:element minOccurs="1" name="IsEligibleForRestore"
+						type="xs:boolean" />
+					<xs:element minOccurs="0" name="NonRestoreReason">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="50" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="NewCurrentDueBalance"
+						type="xs:long" />
+					<xs:element minOccurs="1" name="NewPastDueBalance"
+						type="xs:long" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="DepositRequestType">
+				<xs:sequence>
+					<xs:element name="Header" type="tns:HeaderType" />
+					<xs:element name="Request"
+						type="tns:DepositRequestRecordType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="DepositRequestRecordType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="BAN">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="30" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="Amount">
+						<xs:simpleType>
+							<xs:restriction base="xs:long">
+								<xs:minInclusive value="1" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="Date" type="xs:dateTime" />
+					<xs:element minOccurs="0" name="Annotation">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="255" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="TransSource"
+						type="xs:int" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="DepositOutputType">
+				<xs:sequence>
+					<xs:element name="Header" type="tns:HeaderType" />
+					<xs:element name="ResponseRecord"
+						type="tns:DepositResponseRecordType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="DepositResponseRecordType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="TrackingID"
+						type="xs:long" />
+					<xs:element minOccurs="1" name="IsApplied"
+						type="xs:boolean" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="NoteRequestType">
+				<xs:sequence>
+					<xs:element name="Header" type="tns:HeaderType" />
+					<xs:element name="Request"
+						type="tns:NoteRequestRecordType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="NoteRequestRecordType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="BAN">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="30" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="NoteType">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="30" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="NoteText">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="1333" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="NoteOutputType">
+				<xs:sequence>
+					<xs:element name="Header" type="tns:HeaderType" />
+					<xs:element name="ResponseRecord"
+						type="tns:NoteResponseRecordType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="NoteResponseRecordType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="TrackingID"
+						type="xs:long" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ExtendDueDateRequestType">
+				<xs:sequence>
+					<xs:element name="Header" type="tns:HeaderType" />
+					<xs:element name="Request"
+						type="tns:ExtendDueDateRequestRecordType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ExtendDueDateRequestRecordType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="BAN">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1" />
+								<xs:maxLength value="30" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element minOccurs="1" name="NewDueDate"
+						type="xs:date" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ExtendDueDateOutputType">
+				<xs:sequence>
+					<xs:element name="Header" type="tns:HeaderType" />
+					<xs:element name="ResponseRecord"
+						type="tns:ExtendDueDateResponseRecordType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ExtendDueDateResponseRecordType">
+				<xs:sequence>
+					<xs:element minOccurs="1" name="TrackingID"
+						type="xs:long" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="DuplicateRequest">
+		<wsdl:part element="cpi:DuplicateRequest" name="fault">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="InvalidPaymentAmount">
+		<wsdl:part element="cpi:InvalidPaymentAmount" name="fault">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="InvalidTransType">
+		<wsdl:part element="cpi:InvalidTransType" name="fault">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="accountInfoResponse">
+		<wsdl:part element="cpi:AccountInfoResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="InvalidTransSource">
+		<wsdl:part element="cpi:InvalidTransSource" name="fault">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="deposit">
+		<wsdl:part element="cpi:Deposit" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="TnNotFound">
+		<wsdl:part element="cpi:TnNotFound" name="fault">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="payAndRestoreResponse">
+		<wsdl:part element="cpi:PayAndRestoreResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="payAndRestore">
+		<wsdl:part element="cpi:PayAndRestore" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="extendDueDateResponse">
+		<wsdl:part element="cpi:ExtendDueDateResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="note">
+		<wsdl:part element="cpi:Note" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="accountInfo">
+		<wsdl:part element="cpi:AccountInfo" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="depositResponse">
+		<wsdl:part element="cpi:DepositResponse" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="SystemError">
+		<wsdl:part element="cpi:SystemError" name="fault">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="InvalidNoteType">
+		<wsdl:part element="cpi:InvalidNoteType" name="fault">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="extendDueDate">
+		<wsdl:part element="cpi:ExtendDueDate" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="noteResponse">
+		<wsdl:part element="cpi:NoteResponse" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="NotEligibleForExtension">
+		<wsdl:part element="cpi:NotEligibleForExtension"
+			name="fault">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="AccountNotFound">
+		<wsdl:part element="cpi:AccountNotFound" name="fault">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="AccountInactive">
+		<wsdl:part element="cpi:AccountInactive" name="fault">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="CPIPortType">
+		<wsdl:operation name="accountInfo"
+			parameterOrder="parameters">
+			<wsdl:input message="cpi:accountInfo">
+			</wsdl:input>
+			<wsdl:output message="cpi:accountInfoResponse">
+			</wsdl:output>
+			<wsdl:fault message="cpi:DuplicateRequest"
+				name="DuplicateRequest">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:SystemError" name="SystemError">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:TnNotFound" name="TnNotFound">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:AccountNotFound"
+				name="AccountNotFound">
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="payAndRestore"
+			parameterOrder="parameters">
+			<wsdl:input message="cpi:payAndRestore">
+			</wsdl:input>
+			<wsdl:output message="cpi:payAndRestoreResponse">
+			</wsdl:output>
+			<wsdl:fault message="cpi:DuplicateRequest"
+				name="DuplicateRequest">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:InvalidPaymentAmount"
+				name="InvalidPaymentAmount">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:InvalidTransType"
+				name="InvalidTransType">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:SystemError" name="SystemError">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:InvalidTransSource"
+				name="InvalidTransSource">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:AccountInactive"
+				name="AccountInactive">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:AccountNotFound"
+				name="AccountNotFound">
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="deposit"
+			parameterOrder="parameters">
+			<wsdl:input message="cpi:deposit">
+			</wsdl:input>
+			<wsdl:output message="cpi:depositResponse">
+			</wsdl:output>
+			<wsdl:fault message="cpi:DuplicateRequest"
+				name="DuplicateRequest">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:SystemError" name="SystemError">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:InvalidTransSource"
+				name="InvalidTransSource">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:AccountInactive"
+				name="AccountInactive">
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="note" parameterOrder="parameters">
+			<wsdl:input message="cpi:note">
+			</wsdl:input>
+			<wsdl:output message="cpi:noteResponse">
+			</wsdl:output>
+			<wsdl:fault message="cpi:InvalidNoteType"
+				name="InvalidNoteType">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:DuplicateRequest"
+				name="DuplicateRequest">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:SystemError" name="SystemError">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:AccountInactive"
+				name="AccountInactive">
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="extendDueDate"
+			parameterOrder="parameters">
+			<wsdl:input message="cpi:extendDueDate">
+			</wsdl:input>
+			<wsdl:output message="cpi:extendDueDateResponse">
+			</wsdl:output>
+			<wsdl:fault message="cpi:DuplicateRequest"
+				name="DuplicateRequest">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:SystemError" name="SystemError">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:NotEligibleForExtension"
+				name="NotEligibleForExtension">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:AccountInactive"
+				name="AccountInactive">
+			</wsdl:fault>
+			<wsdl:fault message="cpi:AccountNotFound"
+				name="AccountNotFound">
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="CPISoapBinding" type="cpi:CPIPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="accountInfo">
+			<soap:operation soapAction="" style="document" />
+			<wsdl:input>
+				<soap:body parts="parameters" use="literal" />
+				<wsp:Policy>
+					<wsp:PolicyReference URI="#Auth.xml" />
+				</wsp:Policy>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body parts="parameters" use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="DuplicateRequest">
+				<soap:fault name="DuplicateRequest" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="SystemError">
+				<soap:fault name="SystemError" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="TnNotFound">
+				<soap:fault name="TnNotFound" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="AccountNotFound">
+				<soap:fault name="AccountNotFound" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="payAndRestore">
+			<soap:operation soapAction="" style="document" />
+			<wsdl:input>
+				<soap:body parts="parameters" use="literal" />
+				<wsp:Policy>
+					<wsp:PolicyReference URI="#Auth.xml" />
+				</wsp:Policy>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body parts="parameters" use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="DuplicateRequest">
+				<soap:fault name="DuplicateRequest" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="InvalidPaymentAmount">
+				<soap:fault name="InvalidPaymentAmount" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="InvalidTransType">
+				<soap:fault name="InvalidTransType" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="SystemError">
+				<soap:fault name="SystemError" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="InvalidTransSource">
+				<soap:fault name="InvalidTransSource" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="AccountInactive">
+				<soap:fault name="AccountInactive" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="AccountNotFound">
+				<soap:fault name="AccountNotFound" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="deposit">
+			<soap:operation soapAction="" style="document" />
+			<wsdl:input>
+				<soap:body parts="parameters" use="literal" />
+				<wsp:Policy>
+					<wsp:PolicyReference URI="#Auth.xml" />
+				</wsp:Policy>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body parts="parameters" use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="DuplicateRequest">
+				<soap:fault name="DuplicateRequest" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="SystemError">
+				<soap:fault name="SystemError" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="InvalidTransSource">
+				<soap:fault name="InvalidTransSource" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="AccountInactive">
+				<soap:fault name="AccountInactive" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="note">
+			<soap:operation soapAction="" style="document" />
+			<wsdl:input>
+				<soap:body parts="parameters" use="literal" />
+				<wsp:Policy>
+					<wsp:PolicyReference URI="#Auth.xml" />
+				</wsp:Policy>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body parts="parameters" use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="InvalidNoteType">
+				<soap:fault name="InvalidNoteType" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="DuplicateRequest">
+				<soap:fault name="DuplicateRequest" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="SystemError">
+				<soap:fault name="SystemError" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="AccountInactive">
+				<soap:fault name="AccountInactive" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="extendDueDate">
+			<soap:operation soapAction="" style="document" />
+			<wsdl:input>
+				<soap:body parts="parameters" use="literal" />
+				<wsp:Policy>
+					<wsp:PolicyReference URI="#Auth.xml" />
+				</wsp:Policy>
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body parts="parameters" use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="DuplicateRequest">
+				<soap:fault name="DuplicateRequest" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="SystemError">
+				<soap:fault name="SystemError" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="NotEligibleForExtension">
+				<soap:fault name="NotEligibleForExtension" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="AccountInactive">
+				<soap:fault name="AccountInactive" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="AccountNotFound">
+				<soap:fault name="AccountNotFound" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="CPI">
+		<wsdl:port binding="cpi:CPISoapBinding"
+			name="CPIPortTypeSoapPort">
+			<soap:address
+				location="http://skigold.fptest.fairpointtest.com:8180/CPI/CPI/CPIFRPServices" />
+		</wsdl:port>
+	</wsdl:service>
+	<wsp:Policy wsu:Id="Auth.xml">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SupportingTokens
+					xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+					<wsp:Policy>
+						<sp:UsernameToken
+							sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+							<wsp:Policy>
+								<sp:WssUsernameToken10 />
+							</wsp:Policy>
+						</sp:UsernameToken>
+					</wsp:Policy>
+				</sp:SupportingTokens>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+</wsdl:definitions>
